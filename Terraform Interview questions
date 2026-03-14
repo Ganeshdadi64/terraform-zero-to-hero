@@ -1,0 +1,93 @@
+A DevOps Engineer manually created infrastructure on AWS, and now there is a requirement to use Terraform to manage it. How would you import these resources in Terraform code?
+```
+1️⃣ What the Interviewer Is Asking
+
+The interviewer is asking:
+
+👉 “If infrastructure (EC2, S3, VPC, etc.) was created manually in AWS, how will you bring those resources under Terraform management?”
+
+Normally Terraform creates infrastructure, but in many companies resources are already created manually in the Amazon Web Services console.
+
+So instead of deleting them and recreating them, we import those existing resources into Terraform state.
+
+This process is called Terraform Import.
+
+2️⃣ Easy Explanation
+
+Terraform works with a state file.
+
+Terraform Code  →  Terraform State  →  AWS Infrastructure
+
+But if infrastructure already exists in AWS:
+
+AWS Infrastructure  ❌ not in Terraform State
+
+So we run:
+
+terraform import
+
+to link the existing resource with Terraform state.
+
+3️⃣ Steps to Import Existing AWS Resource
+Step 1 — Write Terraform Configuration
+
+Create the resource block in Terraform.
+
+Example for EC2:
+
+resource "aws_instance" "example" {
+  ami           = "ami-0abcdef1234567890"
+  instance_type = "t2.micro"
+}
+
+⚠️ Configuration must exist before import.
+
+Step 2 — Run Terraform Import
+
+Use the command:
+
+terraform import aws_instance.example i-1234567890abcdef0
+
+Explanation:
+
+aws_instance.example  → Terraform resource name
+i-1234567890abcdef0   → Existing EC2 instance ID
+
+Now Terraform connects that EC2 instance to its state file.
+
+Step 3 — Verify Using Terraform Plan
+
+Run:
+
+terraform plan
+
+Terraform checks whether configuration matches the real infrastructure.
+
+If configuration is incomplete, Terraform will show differences.
+
+4️⃣ Real Example (S3 Bucket)
+
+Suppose an S3 bucket already exists in AWS.
+
+Bucket name:
+
+company-prod-bucket
+Terraform Code
+resource "aws_s3_bucket" "prod_bucket" {
+  bucket = "company-prod-bucket"
+}
+Import Command
+terraform import aws_s3_bucket.prod_bucket company-prod-bucket
+
+Now Terraform manages that bucket.
+
+5️⃣ Important Interview Point ⭐
+
+Terraform does NOT generate configuration automatically.
+
+You must:
+
+1️⃣ Write Terraform code
+2️⃣ Run terraform import
+3️⃣ Run terraform plan to verify
+```
