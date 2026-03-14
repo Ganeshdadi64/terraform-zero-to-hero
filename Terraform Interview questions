@@ -1,3 +1,8 @@
+> [!NOTE]
+> ### 1️⃣ What the Interviewer Is Asking
+> If infrastructure (EC2, S3, VPC, etc.) was created manually in AWS, we can bring them under Terraform using **terraform import** instead of recreating them.
+
+
 
 > ### 1️⃣ What the Interviewer Is Asking
 >
