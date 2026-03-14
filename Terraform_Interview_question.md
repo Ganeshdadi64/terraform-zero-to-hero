@@ -1,4 +1,4 @@
-# A DevOps Engineer manually created infrastructure on AWS, and now there is a requirement to use Terraform to manage it. How would you import these resources in Terraform code?
+#1) A DevOps Engineer manually created infrastructure on AWS, and now there is a requirement to use Terraform to manage it. How would you import these resources in Terraform code?
 # Import Existing AWS Infrastructure into Terraform
 
 ## 1️⃣ What the Interviewer Is Asking
@@ -156,7 +156,7 @@ You must follow these steps:
 
 
 
-# Using the Same Terraform Code for Multiple Environments (Dev, Stage, Prod)
+# 2)Using the Same Terraform Code for Multiple Environments (Dev, Stage, Prod)
 
 ## 1️⃣ What the Interviewer Is Asking
 
@@ -321,7 +321,7 @@ This approach avoids **code duplication** and ensures **consistent infrastructur
 
 
 
-# Terraform State File Explained
+#3) Terraform State File Explained
 
 ## 1️⃣ What is a Terraform State File?
 
