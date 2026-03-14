@@ -97,50 +97,53 @@ You must:
 
 
 
-```
-1️⃣ What the Interviewer Is Asking
+# Using the Same Terraform Code for Multiple Environments (Dev, Stage, Prod)
+
+## 1️⃣ What the Interviewer Is Asking
 
 In real projects, applications run in multiple environments:
 
-Dev → Developers test new features
+- **Dev** → Developers test new features  
+- **Stage** → Pre-production testing  
+- **Prod** → Live environment for users  
 
-Stage → Pre-production testing
+The infrastructure is **similar but not exactly the same**.
 
-Prod → Live environment for users
+### Example
 
-The infrastructure is similar but not exactly the same.
-
-Example:
-
-Environment	EC2 Instance Type
-Dev	t2.micro
-Stage	t2.small
-Prod	t3.medium
+| Environment | EC2 Instance Type |
+|-------------|-------------------|
+| Dev | t2.micro |
+| Stage | t2.small |
+| Prod | t3.medium |
 
 The interviewer is asking:
 
-👉 How will you use the same Terraform code for all these environments without writing separate code for each one?
+👉 **How will you use the same Terraform code for all these environments without writing separate code for each one?**
 
-2️⃣ Simple Idea (Core Concept)
+---
 
-We keep one Terraform codebase and only change the environment values.
+## 2️⃣ Simple Idea (Core Concept)
 
-We do this using:
+We **keep one Terraform codebase** and only change the **environment-specific values**.
 
-Terraform variables
+We achieve this using:
 
-Environment specific variable files (.tfvars)
+- **Terraform variables**
+- **Environment-specific variable files (`.tfvars`)**
 
-So the infrastructure logic stays the same, but values change per environment.
+This means:
 
-3️⃣ Simple Real Example
+- Infrastructure logic remains the **same**
+- Only **values change for each environment**
 
-Suppose we create an EC2 instance.
+---
 
-Step 1 — Define Variables
+## 3️⃣ Step 1 — Define Variables
 
-variables.tf
+**File:** `variables.tf`
 
+```hcl
 variable "instance_type" {
   description = "EC2 instance type"
 }
@@ -148,10 +151,15 @@ variable "instance_type" {
 variable "environment" {
   description = "Environment name"
 }
-Step 2 — Use Variables in Main Code
+```
 
-main.tf
+---
 
+## 4️⃣ Step 2 — Use Variables in Main Terraform Code
+
+**File:** `main.tf`
+
+```hcl
 resource "aws_instance" "web" {
   ami           = "ami-123456"
   instance_type = var.instance_type
@@ -160,66 +168,92 @@ resource "aws_instance" "web" {
     Environment = var.environment
   }
 }
+```
 
-The code is the same for all environments.
+The **same Terraform code is used for all environments**.
 
-Step 3 — Create Environment Files
-Dev Environment
+---
 
-dev.tfvars
+## 5️⃣ Step 3 — Create Environment Variable Files
 
+### Dev Environment
+
+**File:** `dev.tfvars`
+
+```hcl
 instance_type = "t2.micro"
 environment   = "dev"
-Stage Environment
+```
 
-stage.tfvars
+### Stage Environment
 
+**File:** `stage.tfvars`
+
+```hcl
 instance_type = "t2.small"
 environment   = "stage"
-Production Environment
+```
 
-prod.tfvars
+### Production Environment
 
+**File:** `prod.tfvars`
+
+```hcl
 instance_type = "t3.medium"
 environment   = "prod"
-4️⃣ Deploy Each Environment
+```
 
-Dev deployment
+---
 
+## 6️⃣ Step 4 — Deploy Each Environment
+
+### Deploy Dev Environment
+
+```bash
 terraform apply -var-file="dev.tfvars"
+```
 
-Stage deployment
+### Deploy Stage Environment
 
+```bash
 terraform apply -var-file="stage.tfvars"
+```
 
-Production deployment
+### Deploy Production Environment
 
+```bash
 terraform apply -var-file="prod.tfvars"
-5️⃣ Real World Example
-
-Different environments usually have different capacity.
-
-Resource	Dev	Stage	Prod
-EC2	1 instance	2 instances	4 instances
-RDS	Small DB	Medium DB	Large DB
-Auto Scaling	Disabled	Enabled	Enabled
-
-But Terraform code stays the same.
-
-6️⃣ Short Interview Answer (Best Way)
-
-You can answer like this in an interview:
-
-To manage multiple environments like dev, stage, and production using the same Terraform code, we use Terraform variables and environment-specific .tfvars files.
-
-The main Terraform configuration remains the same, while each environment provides different values such as instance type, resource count, or tags.
-
 ```
 
-3)What is the Terraform state file, and why is it important?
+---
 
+## 7️⃣ Real-World Example
 
+Different environments usually require **different infrastructure capacity**.
+
+| Resource | Dev | Stage | Prod |
+|--------|------|------|------|
+| EC2 | 1 instance | 2 instances | 4 instances |
+| RDS | Small DB | Medium DB | Large DB |
+| Auto Scaling | Disabled | Enabled | Enabled |
+
+But the **Terraform code remains the same**.
+
+---
+
+## 8️⃣ Short Interview Answer
+
+To manage multiple environments like **Dev, Stage, and Production** using the same Terraform code, we use **Terraform variables and environment-specific `.tfvars` files**.
+
+The main Terraform configuration remains the same, while each environment provides different values such as **instance type, resource count, or tags**.
+
+During deployment we specify the environment variable file:
+
+```bash
+terraform apply -var-file="dev.tfvars"
 ```
+
+This approach avoids **code duplication** and ensures **consistent infrastructure across environments**.
 What is a Terraform State File?
 
 A Terraform state file is a file where Terraform records the infrastructure it created.
