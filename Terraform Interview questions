@@ -1,3 +1,19 @@
+
+> ### 1️⃣ What the Interviewer Is Asking
+>
+> The interviewer is asking:
+>
+> 👉 “If infrastructure (EC2, S3, VPC, etc.) was created manually in AWS, how will you bring those resources under Terraform management?”
+>
+> Normally Terraform creates infrastructure, but in many companies resources are already created manually in the AWS console.
+>
+> So instead of deleting them and recreating them, we import those existing resources into Terraform state.
+>
+> This process is called **Terraform Import**.
+
+
+
+
 A DevOps Engineer manually created infrastructure on AWS, and now there is a requirement to use Terraform to manage it. How would you import these resources in Terraform code?
 ```
 1️⃣ What the Interviewer Is Asking
