@@ -27,7 +27,7 @@ resource "aws_instance" "example2" {
 }
 ```
 
-
+# Best Example
 
 ```
 
