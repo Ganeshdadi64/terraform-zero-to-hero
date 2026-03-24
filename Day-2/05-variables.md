@@ -1,3 +1,202 @@
+
+# Varibles theory
+# =============================
+
+```
+🧠 1. Theoretical Understanding of Variables
+🔑 Why Variables Exist in Terraform?
+
+Terraform follows Infrastructure as Code (IaC) principles.
+
+👉 Without variables:
+
+Code becomes hardcoded
+Not reusable
+Difficult to manage across environments
+
+👉 With variables:
+
+Same code works for Dev / QA / Prod
+Easily configurable
+More modular
+📥 2. Input Variables (Deep Theory)
+🔍 Definition
+
+👉 Input variables are parameters that allow external values to be passed into Terraform configurations.
+
+🧩 Structure of Input Variable
+variable "name" {
+  description = "what this variable does"
+  type        = string
+  default     = "value"
+}
+🔬 Important Concepts
+1️⃣ Type System (Very Important)
+
+Terraform supports multiple types:
+
+Type	Example
+string	"t2.micro"
+number	2
+bool	true
+list	["us-east-1", "us-west-2"]
+map	{ env = "dev" }
+object	complex structure
+2️⃣ Default Value
+Optional
+If not provided → Terraform asks user
+3️⃣ Validation (Advanced 🔥)
+variable "instance_type" {
+  type = string
+
+  validation {
+    condition     = contains(["t2.micro", "t3.micro"], var.instance_type)
+    error_message = "Invalid instance type!"
+  }
+}
+
+👉 Ensures only valid values are used
+
+🚀 Real Example (Production Style)
+📁 variables.tf
+variable "env" {
+  type    = string
+  default = "dev"
+}
+
+variable "instance_type" {
+  type = string
+}
+
+variable "tags" {
+  type = map(string)
+}
+📁 terraform.tfvars
+env           = "prod"
+instance_type = "t3.medium"
+
+tags = {
+  Owner = "Ganesh"
+  Env   = "Production"
+}
+📁 main.tf
+resource "aws_instance" "app" {
+  ami           = "ami-123456"
+  instance_type = var.instance_type
+
+  tags = var.tags
+}
+
+👉 Result:
+
+Dev → small instance
+Prod → bigger instance
+📤 3. Output Variables (Deep Theory)
+🔍 Definition
+
+👉 Output variables expose internal Terraform values to:
+
+CLI output
+Other modules
+External systems
+🧩 Structure
+output "name" {
+  description = "what this output is"
+  value       = <expression>
+}
+🔬 Key Concepts
+1️⃣ Value Sources
+
+Output can come from:
+
+Resource attributes
+Computed values
+Expressions
+2️⃣ Sensitive Output 🔥
+output "db_password" {
+  value     = "mypassword"
+  sensitive = true
+}
+
+👉 Hidden in CLI output
+
+🔗 4. Input + Output Together (Real Scenario)
+🎯 Use Case: Create EC2 and share its IP
+📁 main.tf
+variable "instance_type" {
+  default = "t2.micro"
+}
+
+resource "aws_instance" "app" {
+  ami           = "ami-123456"
+  instance_type = var.instance_type
+}
+📁 outputs.tf
+output "public_ip" {
+  value = aws_instance.app.public_ip
+}
+
+👉 After apply:
+
+public_ip = 54.23.11.90
+📦 5. Module Communication (Very Important 🔥)
+🧠 Concept
+
+👉 Modules don’t share data directly
+👉 They use inputs & outputs
+
+📁 Module (ec2-module)
+resource "aws_instance" "app" {
+  ami           = "ami-123"
+  instance_type = "t2.micro"
+}
+
+output "instance_id" {
+  value = aws_instance.app.id
+}
+📁 Root Module
+module "ec2" {
+  source = "./ec2-module"
+}
+
+output "final_id" {
+  value = module.ec2.instance_id
+}
+
+👉 Flow:
+
+Module → Output → Root → Use Anywhere
+🔄 6. Variable Precedence (VERY IMPORTANT FOR INTERVIEW)
+
+👉 If multiple values are provided, Terraform follows order:
+
+CLI (-var)
+.tfvars file
+Environment variables
+Default value
+⚠️ 7. Common Mistakes
+❌ Hardcoding values
+
+👉 Not reusable
+
+❌ Not using types
+
+👉 Can cause runtime errors
+
+❌ Exposing sensitive data
+
+👉 Always use sensitive = true
+
+🎯 Final Interview Answer (Strong Version)
+
+👉 “In Terraform, input variables are used to parameterize configurations, enabling reusable and environment-specific deployments, while output variables are used to expose resource attributes and enable communication between modules. Together, they help build modular, scalable, and maintainable infrastructure.”
+
+```
+
+
+
+
+
 # Variables
 
 Input and output variables in Terraform are essential for parameterizing and sharing values within your Terraform configurations and modules. They allow you to make your configurations more dynamic, reusable, and flexible.
